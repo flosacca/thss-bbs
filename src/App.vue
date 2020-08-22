@@ -2,8 +2,9 @@
   <div id="app">
     <a-layout>
       <a-layout-header class="header">
-        <div class="logo">bbs</div>
-        <a-button class="login">log in</a-button>
+        <div class="logo">
+          <router-link to="/">bbs</router-link>
+        </div>
       </a-layout-header>
       <a-layout-content class="content">
         <div class="center">
@@ -13,5 +14,10 @@
     </a-layout>
   </div>
 </template>
+
+<script>
+export default {
+}
+</script>
 
 <style lang="scss" src="./App.vue.scss"/>

@@ -1,7 +1,7 @@
 module.exports = {
   devServer: {
     proxy: {
-      '/api': {
+      '^/api': {
         target: 'http://simplebbs.iterator-traits.com',
         ws: true,
         changeOrigin: true
