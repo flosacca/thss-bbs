@@ -16,6 +16,15 @@ Vue.use(Antd)
 Vue.use(VueAxios, axios)
 Vue.use(VueCookies)
 
+Vue.mixin({
+  methods: {
+    authorize() {
+      let jwt = this.$cookies.get('jwt')
+      this.axios.defaults.headers.common['Authorization'] = jwt
+    }
+  }
+})
+
 new Vue({
   router,
   store,

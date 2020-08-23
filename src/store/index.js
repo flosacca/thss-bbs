@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import cookies from 'vue-cookies'
 
 import router from '../router'
-import jwt from '../utils/jwt'
+import Jwt from '../utils/jwt'
 
 Vue.use(Vuex)
 
@@ -16,7 +16,6 @@ export default new Vuex.Store({
   state: {
     loggedIn: false
   },
-
   mutations: {
     login(state) {
       state.loggedIn = true
@@ -25,22 +24,22 @@ export default new Vuex.Store({
       state.loggedIn = false
     }
   },
-
   actions: {
     async login({ commit }, auth) {
+      let jwt = cookies.get('jwt')
       try {
-        cookies.set('jwt', await jwt.get(auth))
+        jwt = await Jwt.get(auth)
+        cookies.set('jwt', jwt)
       } catch {
-        if (!await jwt.check(cookies.get('jwt'))) {
+        if (!await Jwt.check(jwt)) {
           return
         }
       }
       commit('login')
     },
-
     async logout({ commit }) {
       commit('logout')
-      await jwt.delete(cookies.get('jwt'))
+      await Jwt.delete(cookies.get('jwt'))
       cookies.remove('jwt')
       router.push('/login')
     }
