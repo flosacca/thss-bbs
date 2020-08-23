@@ -1,38 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
 import cookies from 'vue-cookies'
+
+import router from '../router'
+import jwt from '../utils/jwt'
 
 Vue.use(Vuex)
 
-async function getJwt(auth) {
-  if (auth == null) {
-    throw new TypeError()
-  }
-  let res = await axios.patch('/api/v1/login', auth)
-  console.log('jwt get')
-  return res.data.jwt
-}
-
-async function checkJwt(jwt) {
-  if (jwt == null) {
-    return false
-  }
-  try {
-    await axios('/api/v1/hello-user', {
-      headers: { Authorization: jwt }
-    })
-  } catch {
-    return false
-  }
-  console.log('jwt checked')
-  return true
-}
+Vue.mixin({
+  computed: Vuex.mapState(['loggedIn']),
+  methods: Vuex.mapActions(['logout'])
+})
 
 export default new Vuex.Store({
   state: {
     loggedIn: false
   },
+
   mutations: {
     login(state) {
       state.loggedIn = true
@@ -41,18 +25,24 @@ export default new Vuex.Store({
       state.loggedIn = false
     }
   },
+
   actions: {
-    async login({ commit }, auth = null) {
+    async login({ commit }, auth) {
       try {
-        cookies.set('jwt', await getJwt(auth))
+        cookies.set('jwt', await jwt.get(auth))
       } catch {
-        if (!await checkJwt(cookies.get('jwt'))) {
+        if (!await jwt.check(cookies.get('jwt'))) {
           return
         }
       }
       commit('login')
+    },
+
+    async logout({ commit }) {
+      commit('logout')
+      await jwt.delete(cookies.get('jwt'))
+      cookies.remove('jwt')
+      router.push('/login')
     }
-  },
-  modules: {
   }
 })

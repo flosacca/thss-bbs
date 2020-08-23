@@ -3,10 +3,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 export default {
-  computed: mapState(['loggedIn']),
   methods: {
     async login() {
       let auth = await this.axios('http://localhost:1888/auth.json')

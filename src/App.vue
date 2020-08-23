@@ -2,9 +2,10 @@
   <div id="app">
     <a-layout>
       <a-layout-header class="header">
-        <div class="logo">
-          <router-link to="/">bbs</router-link>
-        </div>
+        <router-link to="/">
+          <div class="logo">bbs</div>
+        </router-link>
+        <a-button v-if="loggedIn" @click="logout">log out</a-button>
       </a-layout-header>
       <a-layout-content class="content">
         <div class="center">
@@ -14,10 +15,5 @@
     </a-layout>
   </div>
 </template>
-
-<script>
-export default {
-}
-</script>
 
 <style lang="scss" src="./App.vue.scss"/>
