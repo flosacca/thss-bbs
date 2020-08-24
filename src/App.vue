@@ -43,6 +43,7 @@
     justify-content: center;
     flex: none;
     .center {
+      max-width: 800px;
       flex: 0 1 800px;
       margin: 24px;
       padding: 24px;

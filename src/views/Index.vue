@@ -1,15 +1,18 @@
 <template>
-  <a-list :data-source="posts" :loading="loading">
-    <template v-slot:renderItem="post">
-      <a-list-item>
-        <a-list-item-meta>
-          <template v-slot:title>
-            <a href="#">{{ post.title }}</a>
-          </template>
-        </a-list-item-meta>
-      </a-list-item>
-    </template>
-  </a-list>
+  <div id="posts">
+    <a-list item-layout="vertical" :loading="loading" :data-source="posts">
+      <template v-slot:renderItem="post">
+        <a-list-item>
+          <!-- <a-list-item-meta>
+            <template v-slot:title>
+              <router-link :to="`/posts/${post.id}`">{{ post.title }}</router-link>
+            </template>
+          </a-list-item-meta> -->
+          <router-link :to="`/posts/${post.id}`">{{ post.title }}</router-link>
+        </a-list-item>
+      </template>
+    </a-list>
+  </div>
 </template>
 
 <script>
@@ -21,15 +24,33 @@ export default {
     }
   },
   created() {
-    this.authorize()
-    this.axios('/api/v1/post')
-      .then(({ data }) => {
-        this.loading = false
-        this.posts = data.posts
+    this.getData('/post', {
+      orderByReply: true
+    }, data => {
+      this.loading = false
+      data.posts.forEach(post => {
+        if (/^\s*$/.test(post.title)) {
+          post.title = '(empty)'
+        }
       })
-      .catch(e => {
-        console.log(e.response)
-      })
+      this.posts = data.posts
+      console.log(data)
+    })
   }
 }
 </script>
+
+<style lang="scss">
+#posts {
+  li {
+    overflow: auto;
+    a {
+      color: inherit;
+      font-weight: bold;
+      &:hover {
+        color: #1890ff;
+      }
+    }
+  }
+}
+</style>

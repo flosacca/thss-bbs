@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import store from '../store'
-import Index from '../views/Index.vue'
-import Login from '../views/Login.vue'
+import store from '@/store'
+import Index from '@/views/Index.vue'
+import Login from '@/views/Login.vue'
+import Show from '@/views/Show.vue'
 
 Vue.use(VueRouter)
 
@@ -18,12 +19,10 @@ const routes = [
     component: Login
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    path: '/posts/:id',
+    name: 'show',
+    component: Show,
+    props: true
   }
 ]
 
@@ -38,17 +37,17 @@ router.beforeEach(async (to, from, next) => {
   if (!store.state.loggedIn) {
     await store.dispatch('login')
   }
-  let path = {}
+  let route = {}
   if (!store.state.loggedIn) {
     if (to.name !== 'login') {
-      path = '/login'
+      route.name = 'login'
     }
   } else {
     if (to.name === 'login') {
-      path = '/'
+      route.name = 'index'
     }
   }
-  next(path)
+  next(route)
 })
 
 export default router
