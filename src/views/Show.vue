@@ -5,7 +5,7 @@
       item-layout="vertical"
       :loading="loading"
       :data-source="post.reply"
-      v-if="post.reply.length"
+      v-if="hasReply"
     >
       <template v-slot:renderItem="reply">
         <a-list-item>
@@ -25,6 +25,12 @@ export default {
     return {
       loading: true,
       post: {}
+    }
+  },
+  computed: {
+    hasReply() {
+      let reply = this.post.reply
+      return reply && reply.length !== 0
     }
   },
   created() {

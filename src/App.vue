@@ -2,7 +2,7 @@
   <div id="app">
     <a-layout class="layout">
       <a-layout-header class="header">
-        <router-link to="/">
+        <router-link to="/" @click.native="reload">
           <div class="logo">bbs</div>
         </router-link>
         <a-button v-if="loggedIn" @click="logout">log out</a-button>
@@ -10,16 +10,36 @@
 
       <a-layout-content class="content">
         <div class="center">
-          <keep-alive>
-            <router-view v-if="$route.name === 'index'"/>
-          </keep-alive>
-          <router-view v-if="$route.name !== 'index'"/>
-          <!-- <router-view/> -->
+          <div v-if="isRouterAlive">
+            <keep-alive>
+              <router-view v-if="$route.name === 'index'"/>
+            </keep-alive>
+            <router-view v-if="$route.name !== 'index'"/>
+            <!-- <router-view/> -->
+          </div>
         </div>
       </a-layout-content>
     </a-layout>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      isRouterAlive: true
+    }
+  },
+  methods: {
+    reload() {
+      this.isRouterAlive = false
+      this.$nextTick(() => {
+        this.isRouterAlive = true
+      })
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 #app .layout {
