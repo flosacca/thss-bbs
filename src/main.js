@@ -30,7 +30,11 @@ Vue.mixin({
             'Authorization' : cookies.get('jwt')
           }
         })
-        callback(res.data)
+        if (callback != null) {
+          callback(res.data)
+        } else {
+          return res.data
+        }
       } catch (e) {
         console.log(e.response)
       }

@@ -14,6 +14,7 @@
             <router-view v-if="$route.name === 'index'"/>
           </keep-alive>
           <router-view v-if="$route.name !== 'index'"/>
+          <!-- <router-view/> -->
         </div>
       </a-layout-content>
     </a-layout>
@@ -26,7 +27,7 @@
 
   .header {
     position: fixed;
-    z-index: 1;
+    z-index: 100;
     display: flex;
     height: 54px;
     width: 100%;
