@@ -8,7 +8,9 @@
               <router-link :to="`/posts/${post.id}`">{{ post.title }}</router-link>
             </template>
           </a-list-item-meta> -->
-          <router-link :to="`/posts/${post.id}`">{{ post.title }}</router-link>
+          <router-link :to="`/posts/${post.id}`">
+            <span>{{ post.title }}</span> - {{ post.nickname }} @ {{ post.updated }}
+          </router-link>
         </a-list-item>
       </template>
     </a-list>
@@ -25,6 +27,7 @@ export default {
   },
   created() {
     this.getData('/post', {
+      size: 20,
       orderByReply: true
     }, data => {
       this.loading = false
@@ -46,9 +49,11 @@ export default {
     overflow: auto;
     a {
       color: inherit;
-      font-weight: bold;
       &:hover {
         color: #1890ff;
+      }
+      span {
+        font-weight: bold;
       }
     }
   }

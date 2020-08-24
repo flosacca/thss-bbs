@@ -10,7 +10,10 @@
 
       <a-layout-content class="content">
         <div class="center">
-          <router-view/>
+          <keep-alive>
+            <router-view v-if="$route.name === 'index'"/>
+          </keep-alive>
+          <router-view v-if="$route.name !== 'index'"/>
         </div>
       </a-layout-content>
     </a-layout>
