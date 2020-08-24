@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import Antd from 'ant-design-vue'
 import VueAxios from 'vue-axios'
 import axios from 'axios'
 import cookies from 'vue-cookies'
@@ -8,11 +7,21 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import 'ant-design-vue/dist/antd.css'
+// import Antd from 'ant-design-vue'
+// import 'ant-design-vue/dist/antd.css'
+// Vue.use(Antd)
+import Button from 'ant-design-vue/lib/button'
+import Layout from 'ant-design-vue/lib/layout'
+import List from 'ant-design-vue/lib/list'
+import 'ant-design-vue/lib/button/style/css'
+import 'ant-design-vue/lib/layout/style/css'
+import 'ant-design-vue/lib/list/style/css'
+Vue.use(Button)
+Vue.use(Layout)
+Vue.use(List)
 
 Vue.config.productionTip = false
 
-Vue.use(Antd)
 Vue.use(VueAxios, axios)
 Vue.use(cookies)
 
