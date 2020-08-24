@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export default {
   async get(auth) {
-    if (auth == null) {
+    if (!auth) {
       throw new TypeError()
     }
     let { data } = await axios.patch('/api/v1/login', auth)
@@ -10,7 +10,7 @@ export default {
     return data.jwt
   },
   async check(jwt) {
-    if (jwt == null) {
+    if (!jwt) {
       return false
     }
     try {

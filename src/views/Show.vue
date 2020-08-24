@@ -1,7 +1,12 @@
 <template>
   <div id="post">
     <div v-html="post.content"></div>
-    <a-list item-layout="vertical" :loading="loading" :data-source="post.reply">
+    <a-list
+      item-layout="vertical"
+      :loading="loading"
+      :data-source="post.reply"
+      v-if="post.reply.length"
+    >
       <template v-slot:renderItem="reply">
         <a-list-item>
           <div>{{ reply.id }} - {{ reply.nickname }} @ {{ reply.updated }}</div>

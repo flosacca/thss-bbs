@@ -3,7 +3,7 @@
     <a-list
       item-layout="vertical"
       :loading="loading"
-      :data-source="allPosts"
+      :data-source="posts"
       :pagination="pagination"
     >
       <template v-slot:renderItem="post">
@@ -25,21 +25,12 @@
 <script>
 const size = 10
 
-function fillTitle(pageData) {
-  pageData.posts.forEach(post => {
-    if (/^\s*$/.test(post.title)) {
-      post.title = '(blank)'
-    }
-  })
-  return pageData
-}
-
 export default {
   data() {
     return {
       loading: true,
       pagination: false,
-      pageData: {}
+      posts: []
     }
   },
 
@@ -47,30 +38,17 @@ export default {
     page() {
       return Number(this.$route.query.page) || 1
     },
-
-    allPosts() {
-      let total = this.pageData.total || 0
-      let all = Array(total).fill({})
-      let posts = this.pageData.posts
-      if (posts != null) {
-        let page = this.pagination.current
-        for (let i = 0; i < posts.length; ++i) {
-          all[(page - 1) * size + i] = posts[i]
-        }
-      }
-      return all
-    }
   },
 
   created() {
     this.getPage(this.page, pageData => {
-      this.pageData = fillTitle(pageData)
+      this.assignPage(this.page, pageData)
       this.loading = false
       this.pagination = {
-        showQuickJumper: true,
+        // showQuickJumper: true,
         total: pageData.total,
+        pageSize: size,
         onChange: page => {
-          this.$router.push({ query: { page } })
           this.updatePage(page)
         }
       }
@@ -79,26 +57,38 @@ export default {
   },
 
   methods: {
-    async getPage(page, callback) {
+    async updatePage(page) {
+      this.$router.push({ query: { page } })
+      if (!this.hasPage(page)) {
+        this.loading = true
+        let pageData = await this.getPage(page)
+        this.assignPage(page, pageData)
+        this.loading = false
+      }
+      this.pagination.current = page
+    },
+
+    async getPage(page, next = v => v) {
       let pageData = await this.getData('/post', {
         page,
         size,
         orderByReply: true
       })
-      if (callback != null) {
-        callback(pageData)
-      } else {
-        return pageData
-      }
+      return next(pageData)
     },
 
-    async updatePage(page) {
-      this.pagination.current = page
-      this.loading = true
-      let pageData = await this.getPage(page)
-      this.pageData = fillTitle(pageData)
-      this.loading = false
+    hasPage(page) {
+      return !!this.posts[(page - 1) * size]
     },
+
+    assignPage(page, pageData) {
+      pageData.posts.forEach((post, i) => {
+        if (/^\s*$/.test(post.title)) {
+          post.title = '(blank)'
+        }
+        this.$set(this.posts, (page - 1) * size + i, post)
+      })
+    }
   }
 }
 </script>

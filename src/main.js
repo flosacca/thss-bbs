@@ -22,7 +22,7 @@ Vue.mixin({
       let jwt = cookies.get('jwt')
       axios.defaults.headers.common['Authorization'] = jwt
     },
-    async getData(path, params, callback) {
+    async getData(path, params, next = v => v) {
       try {
         let res = await this.axios('/api/v1' + path, {
           params,
@@ -30,11 +30,7 @@ Vue.mixin({
             'Authorization' : cookies.get('jwt')
           }
         })
-        if (callback != null) {
-          callback(res.data)
-        } else {
-          return res.data
-        }
+        return next(res.data)
       } catch (e) {
         console.log(e.response)
       }
