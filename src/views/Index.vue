@@ -9,8 +9,8 @@
             </template>
           </a-list-item-meta> -->
           <router-link :to="`/posts/${post.id}`">
-            <span>{{ post.title }}</span> - {{ post.nickname }} @ {{ post.updated }}
-          </router-link>
+            {{ post.title }}
+          </router-link> - {{ post.nickname }} @ {{ post.updated }}
         </a-list-item>
       </template>
     </a-list>
@@ -49,11 +49,9 @@ export default {
     overflow: auto;
     a {
       color: inherit;
+      font-weight: bold;
       &:hover {
         color: #1890ff;
-      }
-      span {
-        font-weight: bold;
       }
     }
   }

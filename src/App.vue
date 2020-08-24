@@ -25,8 +25,11 @@
   min-height: 100vh;
 
   .header {
+    position: fixed;
+    z-index: 1;
     display: flex;
     height: 54px;
+    width: 100%;
     padding: 0 24px;
     line-height: 1;
     align-items: center;
@@ -43,8 +46,9 @@
 
   .content {
     display: flex;
-    justify-content: center;
+    margin-top: 54px;
     flex: none;
+    justify-content: center;
     .center {
       max-width: 800px;
       flex: 0 1 800px;
