@@ -1,6 +1,6 @@
 <template>
   <div id="post">
-    <div v-html="post.content"></div>
+    <h1>{{ post.title }}</h1>
     <a-list
       item-layout="vertical"
       :loading="loading"
@@ -9,8 +9,8 @@
     >
       <template v-slot:renderItem="reply">
         <a-list-item>
-          <div>{{ reply.id }} - {{ reply.nickname }} @ {{ reply.updated }}</div>
-          <div>&gt;&gt;{{ reply.replyId }}</div>
+          <div>{{ reply.id }} / {{ reply.nickname }} / {{ reply.updated }}</div>
+          <div v-if="reply.replyId != null">&gt;&gt;{{ reply.replyId }}</div>
           <div v-html="reply.content"></div>
         </a-list-item>
       </template>
@@ -35,10 +35,29 @@ export default {
   },
   created() {
     this.getData(`/post/${this.id}`, {}, data => {
-      this.loading = false
-      this.post = data
       console.log(data)
+      data.reply.unshift(data)
+      this.post = data
+      this.loading = false
     })
   }
 }
 </script>
+
+<style lang="scss">
+#post {
+  li {
+    overflow: auto;
+    a {
+      color: inherit;
+      font-weight: bold;
+      &:hover {
+        color: #1890ff;
+      }
+    }
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+}
+</style>

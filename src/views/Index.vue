@@ -15,7 +15,8 @@
           </a-list-item-meta> -->
           <router-link :to="`/posts/${post.id}`">
             {{ post.title }}
-          </router-link> - {{ post.nickname }} @ {{ post.updated }}
+          </router-link> /
+          {{ post.nickname }} / #{{ post.id }} / @{{ post.lastRepliedTime }}
         </a-list-item>
       </template>
     </a-list>
