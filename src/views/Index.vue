@@ -24,8 +24,6 @@
 </template>
 
 <script>
-const size = 10
-
 export default {
   data() {
     return {
@@ -39,6 +37,9 @@ export default {
     page() {
       return Number(this.$route.query.page) || 1
     },
+    size() {
+      return Number(this.$route.query.size) || 20
+    }
   },
 
   created() {
@@ -46,9 +47,9 @@ export default {
       this.assignPage(this.page, pageData)
       this.loading = false
       this.pagination = {
-        // showQuickJumper: true,
+        showQuickJumper: true,
         total: pageData.total,
-        pageSize: size,
+        pageSize: this.size,
         onChange: page => {
           this.updatePage(page)
         }
@@ -59,7 +60,7 @@ export default {
 
   methods: {
     async updatePage(page) {
-      this.$router.push({ query: { page } })
+      this.$router.push({ query: { ...this.$route.query, page } })
       if (!this.hasPage(page)) {
         this.loading = true
         let pageData = await this.getPage(page)
@@ -72,14 +73,14 @@ export default {
     async getPage(page, next = v => v) {
       let pageData = await this.getData('/post', {
         page,
-        size,
+        size: this.size,
         orderByReply: true
       })
       return next(pageData)
     },
 
     hasPage(page) {
-      return !!this.posts[(page - 1) * size]
+      return !!this.posts[(page - 1) * this.size]
     },
 
     assignPage(page, pageData) {
@@ -87,7 +88,7 @@ export default {
         if (/^\s*$/.test(post.title)) {
           post.title = '(blank)'
         }
-        this.$set(this.posts, (page - 1) * size + i, post)
+        this.$set(this.posts, (page - 1) * this.size + i, post)
       })
     }
   }
