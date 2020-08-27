@@ -13,7 +13,8 @@
       ref="form"
       :model="form"
       :rules="rules"
-      @submit.native.prevent="submit"
+      @submit.native.prevent
+      @submit="submit"
     >
       <a-form-model-item prop="username">
         <a-input
@@ -41,6 +42,8 @@
 
 <script>
 export default {
+  inject: ['reload'],
+
   data() {
     return {
       error: false,
@@ -67,6 +70,7 @@ export default {
       }
     }
   },
+
   methods: {
     submit() {
       this.$refs.form.validate(async valid => {
@@ -74,6 +78,7 @@ export default {
           await this.$store.dispatch('login', this.form)
           if (this.loggedIn) {
             this.$router.push('/')
+            this.reload()
           } else {
             this.error = true
           }

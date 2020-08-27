@@ -8,22 +8,24 @@ import Jwt from '../utils/jwt'
 Vue.use(Vuex)
 
 Vue.mixin({
-  computed: Vuex.mapState(['loggedIn']),
-  methods: Vuex.mapActions(['logout'])
+  computed: Vuex.mapState(['loggedIn'])
 })
 
 export default new Vuex.Store({
   state: {
     loggedIn: false
   },
+
   mutations: {
     login(state) {
       state.loggedIn = true
     },
+
     logout(state) {
       state.loggedIn = false
     }
   },
+
   actions: {
     async login({ commit }, auth) {
       let jwt = cookies.get('jwt')
@@ -37,6 +39,7 @@ export default new Vuex.Store({
       }
       commit('login')
     },
+
     async logout({ commit }) {
       commit('logout')
       await Jwt.delete(cookies.get('jwt'))

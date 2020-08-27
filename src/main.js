@@ -1,45 +1,30 @@
 import Vue from 'vue'
-import VueAxios from 'vue-axios'
 import axios from 'axios'
 import cookies from 'vue-cookies'
+Vue.use(cookies)
+
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css'
+Vue.use(Antd)
 
 import App from './App.vue'
 import router from './router'
 import store from './store'
 
-import Antd from 'ant-design-vue'
-import 'ant-design-vue/dist/antd.css'
-Vue.use(Antd)
-// import Button from 'ant-design-vue/lib/button'
-// import Layout from 'ant-design-vue/lib/layout'
-// import List from 'ant-design-vue/lib/list'
-// import 'ant-design-vue/lib/button/style/css'
-// import 'ant-design-vue/lib/layout/style/css'
-// import 'ant-design-vue/lib/list/style/css'
-// Vue.use(Button)
-// Vue.use(Layout)
-// Vue.use(List)
-
 Vue.config.productionTip = false
-
-Vue.use(VueAxios, axios)
-Vue.use(cookies)
 
 Vue.mixin({
   methods: {
-    authorize() {
-      let jwt = cookies.get('jwt')
-      axios.defaults.headers.common['Authorization'] = jwt
-    },
-    async getData(path, params, next = v => v) {
+    async req(path, { ...options }) {
       try {
-        let res = await this.axios('/api/v1' + path, {
-          params,
+        let res = await axios('/api/v1' + path, {
+          ...options,
           headers: {
+            ...options.headers,
             'Authorization' : cookies.get('jwt')
           }
         })
-        return next(res.data)
+        return res.data
       } catch (e) {
         console.log(e.response)
       }

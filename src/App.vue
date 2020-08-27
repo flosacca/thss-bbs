@@ -26,12 +26,24 @@ export default {
       isRouterAlive: true
     }
   },
+
+  provide() {
+    return {
+      reload: this.reload
+    }
+  },
+
   methods: {
     reload() {
       this.isRouterAlive = false
       this.$nextTick(() => {
         this.isRouterAlive = true
       })
+    },
+
+    logout() {
+      this.$store.dispatch("logout")
+      this.reload()
     }
   }
 }
@@ -43,7 +55,7 @@ export default {
 
   .header {
     position: fixed;
-    z-index: 100;
+    z-index: 1501;
     display: flex;
     height: 54px;
     width: 100%;
