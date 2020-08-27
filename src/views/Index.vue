@@ -1,5 +1,5 @@
 <template>
-  <div id="posts">
+  <div id="posts" class="view">
     <a-list
       item-layout="vertical"
       :loading="loading"
@@ -96,6 +96,7 @@ export default {
 
 <style lang="scss">
 #posts {
+  flex: 0 1 800px;
   li {
     overflow: auto;
     a {

@@ -7,18 +7,18 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-// import Antd from 'ant-design-vue'
-// import 'ant-design-vue/dist/antd.css'
-// Vue.use(Antd)
-import Button from 'ant-design-vue/lib/button'
-import Layout from 'ant-design-vue/lib/layout'
-import List from 'ant-design-vue/lib/list'
-import 'ant-design-vue/lib/button/style/css'
-import 'ant-design-vue/lib/layout/style/css'
-import 'ant-design-vue/lib/list/style/css'
-Vue.use(Button)
-Vue.use(Layout)
-Vue.use(List)
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css'
+Vue.use(Antd)
+// import Button from 'ant-design-vue/lib/button'
+// import Layout from 'ant-design-vue/lib/layout'
+// import List from 'ant-design-vue/lib/list'
+// import 'ant-design-vue/lib/button/style/css'
+// import 'ant-design-vue/lib/layout/style/css'
+// import 'ant-design-vue/lib/list/style/css'
+// Vue.use(Button)
+// Vue.use(Layout)
+// Vue.use(List)
 
 Vue.config.productionTip = false
 

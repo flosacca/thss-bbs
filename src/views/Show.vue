@@ -1,5 +1,5 @@
 <template>
-  <div id="post">
+  <div id="post" class="view">
     <h1>{{ post.title }}</h1>
     <a-list
       item-layout="vertical"
@@ -46,6 +46,7 @@ export default {
 
 <style lang="scss">
 #post {
+  flex: 0 1 800px;
   li {
     overflow: auto;
     a {

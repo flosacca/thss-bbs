@@ -8,16 +8,12 @@
         <a-button v-if="loggedIn" @click="logout">log out</a-button>
       </a-layout-header>
 
-      <a-layout-content class="content">
-        <div class="center">
-          <div v-if="isRouterAlive">
-            <keep-alive>
-              <router-view v-if="$route.name === 'index'"/>
-            </keep-alive>
-            <router-view v-if="$route.name !== 'index'"/>
-            <!-- <router-view/> -->
-          </div>
-        </div>
+      <a-layout-content class="content" v-if="isRouterAlive">
+        <keep-alive>
+          <router-view v-if="$route.name === 'index'"/>
+        </keep-alive>
+        <router-view v-if="$route.name !== 'index'"/>
+        <!-- <router-view/> -->
       </a-layout-content>
     </a-layout>
   </div>
@@ -73,13 +69,13 @@ export default {
     margin-top: 54px;
     flex: none;
     justify-content: center;
-    .center {
-      max-width: 800px;
-      flex: 0 1 800px;
-      margin: 24px;
-      padding: 24px;
-      background: #fff;
-    }
   }
+}
+
+.view {
+  max-width: 800px;
+  margin: 24px;
+  padding: 24px;
+  background: #fff;
 }
 </style>
