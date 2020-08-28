@@ -8,36 +8,40 @@ import Jwt from '../utils/jwt'
 Vue.use(Vuex)
 
 Vue.mixin({
-  computed: Vuex.mapState(['loggedIn'])
+  computed: Vuex.mapState(['loggedIn', 'user'])
 })
 
 export default new Vuex.Store({
   state: {
-    loggedIn: false
+    loggedIn: false,
+    user: null
   },
 
   mutations: {
-    login(state) {
+    login(state, user) {
       state.loggedIn = true
+      state.user = user
     },
 
     logout(state) {
       state.loggedIn = false
+      state.user = null
     }
   },
 
   actions: {
     async login({ commit }, auth) {
-      let jwt = cookies.get('jwt')
+      let jwt = null
       try {
         jwt = await Jwt.get(auth)
         cookies.set('jwt', jwt)
       } catch {
-        if (!await Jwt.check(jwt)) {
-          return
-        }
+        jwt = cookies.get('jwt')
       }
-      commit('login')
+      let user = await Jwt.find(jwt)
+      if (user) {
+        commit('login', user)
+      }
     },
 
     async logout({ commit }) {

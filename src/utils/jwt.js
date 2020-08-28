@@ -9,20 +9,20 @@ export default {
     console.log('jwt got')
     return data.jwt
   },
-  async check(jwt) {
-    if (!jwt) {
-      return false
+
+  async find(jwt) {
+    if (jwt) {
+      try {
+        let { data } = await axios('/api/v1/user', {
+          headers: { 'Authorization': jwt }
+        })
+        console.log(data)
+        return data
+      } catch {}
     }
-    try {
-      await axios('/api/v1/hello-user', {
-        headers: { 'Authorization': jwt }
-      })
-    } catch {
-      return false
-    }
-    console.log('jwt checked')
-    return true
+    return null
   },
+
   async delete(jwt) {
     try {
       await axios.patch('/api/v1/logout', {}, {

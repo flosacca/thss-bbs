@@ -41,8 +41,8 @@ export default {
       })
     },
 
-    logout() {
-      this.$store.dispatch("logout")
+    async logout() {
+      await this.$store.dispatch("logout")
       this.reload()
     }
   }
