@@ -1,16 +1,17 @@
 <template>
-  <div id="post" class="view">
-    <h1 v-if="editing.id !== 0">
-      {{ post.title }}
-    </h1>
-    <a-input v-else
+  <div id="post" class="view" v-if="hasReply">
+    <a-input
+      v-if="editing(post)"
       v-model="editForm.title"
     />
+    <h1 v-else>
+      {{ post.title }}
+    </h1>
+
     <a-list
       item-layout="vertical"
       :loading="loading"
       :data-source="post.reply"
-      v-if="hasReply"
     >
       <template v-slot:renderItem="reply">
         <a-list-item>
@@ -22,14 +23,15 @@
               / <a @click="edit(reply)">edit</a>
             </span>
           </div>
-          <div v-if="reply.replyId == null && editing.id === 0">
+
+          <div v-if="editing(reply)">
             <editor-form
               ref="editForm"
               :form="editForm"
               :hasTitle="false"
-              submitText="edit post"
-              :submitting="postSending"
-              @submit="editPost"
+              submitText="OK"
+              :submitting="editSending"
+              @submit="editSubmit"
             />
           </div>
           <div v-else>
@@ -49,7 +51,7 @@
       submitText="new reply"
       :submitting="replying"
       @submit="newReply"
-      v-if="hasReply"
+      v-if="current == null"
     />
   </div>
 </template>
@@ -69,8 +71,8 @@ export default {
     return {
       loading: true,
       replying: false,
-      postSending: false,
-      editing: {},
+      editSending: false,
+      current: null,
       post: {},
       replyForm: {
         content: ''
@@ -103,21 +105,31 @@ export default {
     },
 
     edit(reply) {
-      if (reply.replyId == null) {
-        this.editing = { id: 0 }
-        let { title, content } = this.post
+      let { title, content } = reply
+      if (title == null) {
+        this.editForm = { content }
+      } else {
         this.editForm = { title, content }
       }
+      this.current = reply
     },
 
-    async editPost() {
-      console.log('edit post', this.editForm)
-      this.postSending = true
-      await this.req(`/post/${this.id}`, {
+    editing(reply) {
+      return reply === this.current
+    },
+
+    async editSubmit() {
+      console.log('edit', this.editForm)
+      this.editSending = true
+      let url = `/post/${this.id}`
+      if (this.current !== this.post) {
+        url += `/reply/${this.current.id}`
+      }
+      await this.req(url, {
         method: 'put',
         data: this.editForm
       })
-      this.postSending = false
+      this.editSending = false
       this.reload()
     },
 
