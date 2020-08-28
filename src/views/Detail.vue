@@ -28,10 +28,10 @@
     <editor-form
       ref="form"
       :form="form"
-      submitText="edit post"
+      :hasTitle="false"
+      submitText="new reply"
       :submitting="posting"
       @submit="submit"
-      v-if="editing === 'post'"
     />
   </div>
 </template>
@@ -68,7 +68,6 @@ export default {
 
   created() {
     this.req(`/post/${this.id}`).then(post => {
-      console.log(post)
       post.reply.unshift(post)
       this.post = post
       this.loading = false
@@ -81,32 +80,17 @@ export default {
     },
 
     edit(reply) {
-      if (reply.title) {
-        if (this.editing !== 'post') {
-          this.editing = 'post'
-          this.form = {
-            title: this.post.title,
-            content: this.post.content
-          }
-        }
-        if (this.$refs.form) {
-          this.$refs.form.focus()
-        } else {
-          this.$nextTick(() => {
-            this.$refs.form.focus()
-          })
-        }
-      } else {
-        this.editing = 'reply'
-      }
     },
 
     async submit() {
-      console.log(this.form)
+      console.log('new reply', this.form)
       this.posting = true
-      await this.req(`/post/${this.id}`, {
-        method: 'put',
-        data: this.form
+      await this.req(`/post/${this.id}/reply`, {
+        method: 'post',
+        data: {
+          ...this.form,
+          replyId: 0
+        }
       })
       this.posting = false
       this.reload()

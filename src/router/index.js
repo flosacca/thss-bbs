@@ -38,7 +38,6 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  console.log(to)
   if (!store.state.loggedIn) {
     await store.dispatch('login')
   }
