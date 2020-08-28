@@ -18,40 +18,27 @@
       </template>
     </a-list>
 
-    <a-form-model
+    <editor-form
       class="new-post"
-      layout="vertical"
       ref="form"
       :model="form"
-      :rules="rules"
-      @submit.native.prevent
+      :title="true"
+      submit="new post"
       @submit="submit"
       v-if="!loading || posts.length !== 0"
-    >
-      <a-form-model-item prop="title">
-        <a-input placeholder="Title" v-model="form.title"/>
-      </a-form-model-item>
-      <a-form-model-item>
-        <!-- <a-textarea :rows="8" v-model="form.content"/> -->
-        <contenteditable
-          tag="div"
-          class="ant-input"
-          v-model="form.content"
-          :noHTML="false"
-        />
-      </a-form-model-item>
-      <a-form-model-item>
-        <a-button type="primary" html-type="submit">
-          new post
-        </a-button>
-      </a-form-model-item>
-    </a-form-model>
+    />
   </div>
 </template>
 
 <script>
+import EditorForm from '@/components/EditorForm'
+
 export default {
   inject: ['reload'],
+
+  components: {
+    EditorForm
+  },
 
   data() {
     return {
@@ -61,15 +48,6 @@ export default {
       form: {
         title: '',
         content: ''
-      },
-      rules: {
-        title: [
-          {
-            required: true,
-            message: 'Title can not be empty',
-            trigger: 'change'
-          }
-        ]
       }
     }
   },
@@ -145,7 +123,7 @@ export default {
           //   data: this.form
           // })
           // this.reload()
-          console.log(this.form.content)
+          console.log(this.form)
         }
       })
     }
@@ -164,28 +142,6 @@ export default {
       &:hover {
         color: #1890ff;
       }
-    }
-  }
-
-  form.new-post {
-    margin-top: 28px;
-    & > :nth-child(1) {
-      margin-bottom: 18px;
-      & input {
-      font-weight: bold;
-      }
-    }
-    & > :nth-child(2) {
-      margin-bottom: 12px;
-    }
-    [contentEditable=true] {
-      height: 176.4px;
-      overflow: auto;
-    }
-    [type=submit] {
-      font-weight: bold;
-      text-transform: capitalize;
-      width: 100%;
     }
   }
 }

@@ -13,8 +13,13 @@
             {{ reply.nickname }} /
             #{{ reply.id }} /
             {{ reply.updated | formatDate('absolute') }}
+            <span v-if="reply.userId === user.id">
+              / <a @click="edit(reply)">edit</a>
+            </span>
           </div>
-          <div v-if="reply.replyId != null">&gt;&gt;{{ reply.replyId }}</div>
+          <div v-if="reply.replyId != null">
+            &gt;&gt;{{ reply.replyId }}
+          </div>
           <div v-html="render(reply)"></div>
         </a-list-item>
       </template>
@@ -34,6 +39,7 @@ export default {
   data() {
     return {
       loading: true,
+      editing: false,
       post: {}
     }
   },
@@ -57,6 +63,15 @@ export default {
   methods: {
     render(reply) {
       return MarkdownIt.render(reply.content)
+    },
+
+    edit(reply) {
+      console.log(reply)
+      if (reply.title) {
+        this.editing = 'post'
+      } else {
+        this.editing = 'reply'
+      }
     }
   }
 }
@@ -67,13 +82,6 @@ export default {
   flex: 0 1 800px;
   li {
     overflow: auto;
-    a {
-      color: inherit;
-      font-weight: bold;
-      &:hover {
-        color: #1890ff;
-      }
-    }
     &:last-child {
       padding-bottom: 0;
     }
