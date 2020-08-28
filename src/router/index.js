@@ -4,6 +4,7 @@ import store from '@/store'
 import Index from '@/views/Index.vue'
 import Login from '@/views/Login.vue'
 import Show from '@/views/Show.vue'
+import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -23,6 +24,10 @@ const routes = [
     name: 'show',
     component: Show,
     props: true
+  },
+  {
+    path: '/*',
+    component: NotFound
   }
 ]
 
