@@ -18,15 +18,20 @@
     <a-form-model-item
       class="editor-form-content"
     >
-      <contenteditable
+      <a-textarea :rows="8" v-model="model.content"/>
+      <!-- <contenteditable
         tag="div"
         class="ant-input"
         v-model="model.content"
         :noHTML="false"
-      />
+      /> -->
     </a-form-model-item>
     <a-form-model-item>
-      <a-button type="primary" html-type="submit">
+      <a-button
+        type="primary"
+        html-type="submit"
+        :disabled="submitting"
+      >
         {{ submit }}
       </a-button>
     </a-form-model-item>
@@ -49,6 +54,10 @@ export default {
     submit: {
       type: String,
       default: 'submit'
+    },
+    submitting: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -90,7 +99,7 @@ export default {
   .editor-form-content {
     margin-bottom: 12px;
     [contentEditable=true] {
-      height: 176.4px;
+      height: 176px;
       overflow: auto;
     }
   }
@@ -98,6 +107,9 @@ export default {
     font-weight: bold;
     text-transform: capitalize;
     width: 100%;
+    &[disabled] {
+      cursor: default;
+    }
   }
 }
 </style>

@@ -24,6 +24,15 @@
         </a-list-item>
       </template>
     </a-list>
+
+    <editor-form
+      ref="form"
+      :model="form"
+      submit="edit post"
+      :submitting="posting"
+      @submit="submit"
+      v-if="editing === 'post'"
+    />
   </div>
 </template>
 
@@ -34,13 +43,19 @@ const MarkdownIt = require('markdown-it')({
 })
 
 export default {
+  inject: ['reload'],
+
   props: ['id'],
 
   data() {
     return {
       loading: true,
       editing: false,
-      post: {}
+      posting: false,
+      post: {},
+      form: {
+        content: ''
+      }
     }
   },
 
@@ -52,10 +67,10 @@ export default {
   },
 
   created() {
-    this.req(`/post/${this.id}`).then(data => {
-      console.log(data)
-      data.reply.unshift(data)
-      this.post = data
+    this.req(`/post/${this.id}`).then(post => {
+      console.log(post)
+      post.reply.unshift(post)
+      this.post = post
       this.loading = false
     })
   },
@@ -66,12 +81,30 @@ export default {
     },
 
     edit(reply) {
-      console.log(reply)
       if (reply.title) {
         this.editing = 'post'
+        this.form = {
+          title: this.post.title,
+          content: this.post.content
+        }
       } else {
         this.editing = 'reply'
       }
+    },
+
+    submit() {
+      this.$refs.form.validate(async valid => {
+        if (valid) {
+          console.log(this.form)
+          this.posting = true
+          await this.req(`/post/${this.id}`, {
+            method: 'put',
+            data: this.form
+          })
+          this.posting = false
+          this.reload()
+        }
+      })
     }
   }
 }

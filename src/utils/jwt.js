@@ -6,7 +6,6 @@ export default {
       throw new TypeError()
     }
     let { data } = await axios.patch('/api/v1/login', auth)
-    console.log('jwt got')
     return data.jwt
   },
 
@@ -16,7 +15,6 @@ export default {
         let { data } = await axios('/api/v1/user', {
           headers: { 'Authorization': jwt }
         })
-        console.log(data)
         return data
       } catch {}
     }
@@ -31,7 +29,6 @@ export default {
     } catch {
       return false
     }
-    console.log('jwt deleted')
     return true
   }
 }

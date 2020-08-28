@@ -19,11 +19,10 @@
     </a-list>
 
     <editor-form
-      class="new-post"
       ref="form"
       :model="form"
-      :title="true"
       submit="new post"
+      :submitting="posting"
       @submit="submit"
       v-if="!loading || posts.length !== 0"
     />
@@ -31,18 +30,13 @@
 </template>
 
 <script>
-import EditorForm from '@/components/EditorForm'
-
 export default {
   inject: ['reload'],
-
-  components: {
-    EditorForm
-  },
 
   data() {
     return {
       loading: true,
+      posting: false,
       pagination: false,
       posts: [],
       form: {
@@ -115,15 +109,18 @@ export default {
       })
     },
 
-    async submit() {
+    submit() {
       this.$refs.form.validate(async valid => {
         if (valid) {
+          console.log(this.form)
+          this.posting = true
           // await this.req('/post', {
           //   method: 'post',
           //   data: this.form
           // })
-          // this.reload()
-          console.log(this.form)
+          await new Promise(r => setTimeout(r, 2000))
+          this.posting = false
+          this.reload()
         }
       })
     }

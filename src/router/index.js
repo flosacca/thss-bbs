@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import store from '@/store'
 import Index from '@/views/Index.vue'
 import Login from '@/views/Login.vue'
-import Show from '@/views/Show.vue'
+import Detail from '@/views/Detail.vue'
 import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
@@ -21,8 +21,8 @@ const routes = [
   },
   {
     path: '/posts/:id',
-    name: 'show',
-    component: Show,
+    name: 'detail',
+    component: Detail,
     props: true
   },
   {
