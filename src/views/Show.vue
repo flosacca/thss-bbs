@@ -9,7 +9,11 @@
     >
       <template v-slot:renderItem="reply">
         <a-list-item>
-          <div>{{ reply.id }} / {{ reply.nickname }} / {{ reply.updated }}</div>
+          <div>
+            {{ reply.nickname }} /
+            #{{ reply.id }} /
+            {{ reply.updated | formatDate('absolute') }}
+          </div>
           <div v-if="reply.replyId != null">&gt;&gt;{{ reply.replyId }}</div>
           <div v-html="render(reply)"></div>
         </a-list-item>

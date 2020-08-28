@@ -11,7 +11,9 @@
           <router-link :to="`/posts/${post.id}`">
             {{ post.title }}
           </router-link> /
-          {{ post.nickname }} / #{{ post.id }} / @{{ post.lastRepliedTime }}
+          {{ post.nickname }} /
+          #{{ post.id }} /
+          {{ post.lastRepliedTime | formatDate('absolute') }}
         </a-list-item>
       </template>
     </a-list>
