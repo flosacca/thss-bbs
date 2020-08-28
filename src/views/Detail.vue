@@ -27,8 +27,8 @@
 
     <editor-form
       ref="form"
-      :model="form"
-      submit="edit post"
+      :form="form"
+      submitText="edit post"
       :submitting="posting"
       @submit="submit"
       v-if="editing === 'post'"
@@ -82,29 +82,34 @@ export default {
 
     edit(reply) {
       if (reply.title) {
-        this.editing = 'post'
-        this.form = {
-          title: this.post.title,
-          content: this.post.content
+        if (this.editing !== 'post') {
+          this.editing = 'post'
+          this.form = {
+            title: this.post.title,
+            content: this.post.content
+          }
+        }
+        if (this.$refs.form) {
+          this.$refs.form.focus()
+        } else {
+          this.$nextTick(() => {
+            this.$refs.form.focus()
+          })
         }
       } else {
         this.editing = 'reply'
       }
     },
 
-    submit() {
-      this.$refs.form.validate(async valid => {
-        if (valid) {
-          console.log(this.form)
-          this.posting = true
-          await this.req(`/post/${this.id}`, {
-            method: 'put',
-            data: this.form
-          })
-          this.posting = false
-          this.reload()
-        }
+    async submit() {
+      console.log(this.form)
+      this.posting = true
+      await this.req(`/post/${this.id}`, {
+        method: 'put',
+        data: this.form
       })
+      this.posting = false
+      this.reload()
     }
   }
 }

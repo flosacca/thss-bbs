@@ -20,8 +20,8 @@
 
     <editor-form
       ref="form"
-      :model="form"
-      submit="new post"
+      :form="form"
+      submitText="new post"
       :submitting="posting"
       @submit="submit"
       v-if="!loading || posts.length !== 0"

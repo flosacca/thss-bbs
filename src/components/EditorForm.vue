@@ -3,22 +3,30 @@
     class="editor-form"
     layout="vertical"
     ref="form"
-    :model="model"
+    :model="form"
     :rules="rules"
     @submit.native.prevent
-    @submit="forward"
+    @submit="validate"
   >
     <a-form-model-item
       class="editor-form-title"
       prop="title"
-      v-if="title"
+      v-if="hasTitle"
     >
-      <a-input placeholder="Title" v-model="model.title"/>
+      <a-input
+        placeholder="Title"
+        v-model="form.title"
+      />
     </a-form-model-item>
+
     <a-form-model-item
       class="editor-form-content"
     >
-      <a-textarea :rows="8" v-model="model.content"/>
+      <a-textarea
+        ref="content"
+        :rows="8"
+        v-model="form.content"
+      />
       <!-- <contenteditable
         tag="div"
         class="ant-input"
@@ -26,13 +34,14 @@
         :noHTML="false"
       /> -->
     </a-form-model-item>
+
     <a-form-model-item>
       <a-button
         type="primary"
         html-type="submit"
         :disabled="submitting"
       >
-        {{ submit }}
+        {{ submitText }}
       </a-button>
     </a-form-model-item>
   </a-form-model>
@@ -43,15 +52,15 @@ export default {
   name: 'editor-form',
 
   props: {
-    model: {
+    form: {
       type: Object,
       required: true
     },
-    title: {
+    hasTitle: {
       type: Boolean,
       default: true
     },
-    submit: {
+    submitText: {
       type: String,
       default: 'submit'
     },
@@ -61,10 +70,11 @@ export default {
     }
   },
 
-  data() {
-    return {
-      rules: {
-        title: [
+  computed: {
+    rules() {
+      let res = {}
+      if (this.hasTitle) {
+        res.title = [
           {
             required: true,
             message: 'Title can not be empty',
@@ -72,16 +82,21 @@ export default {
           }
         ]
       }
+      return res
     }
   },
 
   methods: {
-    validate(...args) {
-      return this.$refs.form.validate(...args)
+    focus() {
+      this.$refs.content.focus()
     },
 
-    forward(event) {
-      this.$emit(event.type, event)
+    validate() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.$emit('submit')
+        }
+      })
     }
   }
 }
