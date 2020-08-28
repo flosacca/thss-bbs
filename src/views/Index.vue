@@ -32,7 +32,13 @@
         <a-input placeholder="Title" v-model="form.title"/>
       </a-form-model-item>
       <a-form-model-item>
-        <a-textarea :rows="8" v-model="form.content"/>
+        <!-- <a-textarea :rows="8" v-model="form.content"/> -->
+        <contenteditable
+          tag="div"
+          class="ant-input"
+          v-model="form.content"
+          :noHTML="false"
+        />
       </a-form-model-item>
       <a-form-model-item>
         <a-button type="primary" html-type="submit">
@@ -134,11 +140,12 @@ export default {
     async submit() {
       this.$refs.form.validate(async valid => {
         if (valid) {
-          await this.req('/post', {
-            method: 'post',
-            data: this.form
-          })
-          this.reload()
+          // await this.req('/post', {
+          //   method: 'post',
+          //   data: this.form
+          // })
+          // this.reload()
+          console.log(this.form.content)
         }
       })
     }
@@ -170,6 +177,10 @@ export default {
     }
     & > :nth-child(2) {
       margin-bottom: 12px;
+    }
+    [contentEditable=true] {
+      height: 176.4px;
+      overflow: auto;
     }
     [type=submit] {
       font-weight: bold;

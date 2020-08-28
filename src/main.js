@@ -2,7 +2,9 @@ import Vue from 'vue'
 import axios from 'axios'
 import cookies from 'vue-cookies'
 import moment from 'moment'
+import ContentEditable from 'vue-contenteditable'
 Vue.use(cookies)
+Vue.use(ContentEditable)
 
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
