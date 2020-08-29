@@ -81,13 +81,16 @@ export default {
     margin-top: 54px;
     flex: none;
     justify-content: center;
+    .ant-list {
+      font-size: inherit;
+    }
   }
 }
 
 .view {
   max-width: 800px;
   margin: 24px;
-  padding: 24px;
+  padding: 24px 32px;
   background: #fff;
 }
 </style>

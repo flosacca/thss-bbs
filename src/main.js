@@ -3,6 +3,7 @@ import axios from 'axios'
 import cookies from 'vue-cookies'
 import moment from 'moment'
 import ContentEditable from 'vue-contenteditable'
+import 'highlight.js/styles/github.css'
 Vue.use(cookies)
 Vue.use(ContentEditable)
 

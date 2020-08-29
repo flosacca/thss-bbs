@@ -54,9 +54,23 @@
 </template>
 
 <script>
+const hljs = require('highlight.js')
+
 const MarkdownIt = require('markdown-it')({
   html: true,
-  linkify: true
+  linkify: true,
+  highlight(code, lang) {
+    let html = null
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        html = hljs.highlight(lang, code).value
+      } catch {}
+    }
+    if (html == null) {
+      html = MarkdownIt.utils.escapeHtml(code)
+    }
+    return `<pre class="hljs"><code>${html}</code></pre>`
+  }
 })
 
 export default {
@@ -200,7 +214,11 @@ export default {
 #post {
   flex: 0 1 800px;
   p {
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  pre {
+    overflow: auto;
+    font-size: 95%;
   }
   .reply-item {
     overflow: auto;
