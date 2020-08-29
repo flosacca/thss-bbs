@@ -7,7 +7,7 @@
       :pagination="pagination"
     >
       <template v-slot:renderItem="post">
-        <a-list-item>
+        <a-list-item class="post-item">
           <base-items :items="headerItems(post)"/>
         </a-list-item>
       </template>
@@ -181,10 +181,10 @@ export default {
 <style lang="scss">
 #posts {
   flex: 0 1 800px;
-  li {
+  .post-item {
     overflow: auto;
     a {
-      color: rgba(0, 0, 0, 0.5);
+      color: rgba(6, 36, 63, 0.7);
       &:first-child {
         color: inherit;
         font-weight: bold;
@@ -198,6 +198,9 @@ export default {
     margin-top: 24px;
     padding-top: 18px;
     border-top: 1px solid #e8e8e8;
+  }
+  .ant-list-pagination * {
+    font-weight: bold;
   }
 }
 </style>

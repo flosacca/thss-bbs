@@ -85,7 +85,7 @@ export default {
       let total = this.floors.length
       let pageSize = 20
       return total > pageSize && {
-        showQuickJumper: true,
+        /* showQuickJumper: true, */
         total,
         pageSize,
         onChange() {
@@ -98,16 +98,21 @@ export default {
   created() {
     this.req(`/post/${this.id}`).then(post => {
       post.id = 0
+      post.pos = '#1'
       let floors = [[post, []]]
       let index = {}
       post.reply.forEach(reply => {
         if (reply.replyId === 0) {
-          index[reply.id] = floors.length
+          let i = floors.length
           floors.push([reply, []])
+          index[reply.id] = i
+          reply.pos = `#${i + 1}`
         } else {
           let i = index[reply.replyId]
+          let j = floors[i][1].length
           floors[i][1].push(reply)
           index[reply.id] = i
+          reply.pos = `${i + 1}-${j + 1}`
         }
       })
       this.floors = floors
@@ -193,6 +198,9 @@ export default {
       margin: 0;
       padding: 18px 0;
       border-bottom: 1px solid #e8e8e8;
+      * {
+        font-weight: bold;
+      }
     }
   }
 }

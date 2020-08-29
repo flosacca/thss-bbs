@@ -36,7 +36,9 @@
             />
           </template>
           <template v-else>
-            <p>{{ hint(reply) }}</p>
+            <template v-if="table[reply.replyId].replyId !== 0">
+              <p>{{ hint(reply) }}</p>
+            </template>
             <div v-html="render(reply)"></div>
           </template>
         </a-list-item>
@@ -77,12 +79,23 @@ export default {
   },
 
   computed: {
+    table() {
+      let table = {}
+      let a = this.replies
+      if (a && a[1]) {
+        [a[0], ...a[1]].forEach(reply => {
+          table[reply.id] = reply
+        })
+      }
+      return table
+    },
+
     pagination() {
       let total = this.replies[1].length
       let pageSize = 5
       return total > pageSize && {
         size: 'small',
-        /* showQuickJumper: true, */
+        showQuickJumper: true,
         total,
         pageSize
       }
@@ -91,7 +104,8 @@ export default {
 
   methods: {
     hint(reply) {
-      return '>>' + reply.replyId
+      let a = this.table[reply.replyId]
+      return `re: ${a.nickname} / ${a.pos}`
     },
 
     render(reply) {
@@ -141,7 +155,7 @@ export default {
     headerItems(reply) {
       let items = [
         reply.nickname,
-        `#${reply.id}`,
+        reply.pos,
         this.formatDate(reply.updated)
       ]
       if (reply.userId === this.user.id) {
@@ -173,17 +187,30 @@ export default {
   .reply-item {
     overflow: auto;
     .editor-form {
-      margin: 16px 0 4px;
+      margin: 8px 0 4px;
       .editor-form-content {
         margin-bottom: 0;
       }
     }
+    p:first-child a {
+      color: rgba(12, 72, 127, 0.9);
+      &:hover {
+        color: #1890ff;
+      }
+    }
   }
   li.reply-item {
-    margin-left: 24px;
+    margin-left: 14px;
+    padding: 4px 0;
+    p {
+      margin-bottom: 4px;
+      &:last-child {
+        margin-bottom: 2px;
+      }
+    }
   }
   div.reply-item {
-    padding: 12px 0;
+    padding: 8px 0;
     &:not(:last-child) {
       border-bottom: 1px solid #e8e8e8;
     }

@@ -16,11 +16,12 @@ export default {
   render(createElement) {
     let a = []
     this.items.forEach(item => {
-      if (Array.isArray(item)) {
-        item = createElement(...item)
+      if (item != null) {
+        if (Array.isArray(item)) {
+          item = createElement(...item)
+        }
+        a = a.concat([item, ' / '])
       }
-      a.push(item)
-      a.push(' / ')
     })
     if (a.length) {
       a.pop()
