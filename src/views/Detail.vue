@@ -1,116 +1,106 @@
 <template>
-  <div id="post" class="view" v-if="hasReply">
-    <a-input
-      class="title"
-      placeholder="Title"
-      v-if="editing(post)"
-      v-model="editForm.title"
-    />
-    <h1 v-else>
-      {{ post.title }}
-    </h1>
+  <div id="post" class="view">
+    <template v-if="!loading">
+      <template v-if="current !== top">
+        <h1>{{ top.title }}</h1>
+      </template>
+      <template v-else>
+        <a-input
+          class="title"
+          placeholder="Title"
+          v-model="editForm.title"
+        />
+      </template>
+    </template>
 
     <a-list
       item-layout="vertical"
       :loading="loading"
-      :data-source="post.reply"
+      :data-source="floors"
     >
-      <template v-slot:renderItem="reply">
-        <a-list-item class="reply-item">
-          <base-items tag="p" :items="headerItems(reply)"/>
-
-          <div v-if="editing(reply)">
-            <editor-form
-              ref="editForm"
-              :form="editForm"
-              :hasTitle="false"
-              submitText="OK"
-              :submitting="editSending"
-              @submit="editSubmit"
-            />
-          </div>
-          <div v-else>
-            <p v-if="reply !== post">
-              {{ '>>' + reply.replyId }}
-            </p>
-            <div v-html="render(reply)"></div>
-          </div>
+      <template v-slot:renderItem="floor">
+        <a-list-item class="floor">
+          <reply-list
+            :replies="floor"
+            :current="current"
+            :form="editForm"
+            @edit="edit"
+            @discard="discard"
+            @reply="addReply"
+            @submit="submitEdit"
+          />
         </a-list-item>
       </template>
     </a-list>
 
-    <div class="reply" v-if="current == null">
-      <div>{{ '>>' + replyId }}</div>
-      <editor-form
-        ref="replyForm"
-        :form="replyForm"
-        :hasTitle="false"
-        submitText="reply"
-        :submitting="replying"
-        @submit="newReply"
-      />
-    </div>
+    <template v-if="!loading && current == null">
+      <div class="reply">
+        <div>{{ '>>' + replyId }}</div>
+        <editor-form
+          ref="replyForm"
+          :form="replyForm"
+          :hasTitle="false"
+          submitText="reply"
+          :submitting="replying"
+          @submit="newReply"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
-const hljs = require('highlight.js')
-
-const MarkdownIt = require('markdown-it')({
-  html: true,
-  linkify: true,
-  highlight(code, lang) {
-    let html = null
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        html = hljs.highlight(lang, code).value
-      } catch {}
-    }
-    if (html == null) {
-      html = MarkdownIt.utils.escapeHtml(code)
-    }
-    return `<pre class="hljs"><code>${html}</code></pre>`
-  }
-})
+import ReplyList from '@/components/ReplyList.vue'
 
 export default {
   inject: ['reload'],
 
   props: ['id'],
 
+  components: {
+    'reply-list': ReplyList
+  },
+
   data() {
     return {
       loading: true,
       replying: false,
-      editSending: false,
       current: null,
       replyId: 0,
-      post: {},
-      replyForm: {},
-      editForm: {}
+      floors: [],
+      editForm: {},
+      replyForm: {}
     }
   },
 
   computed: {
-    hasReply() {
-      let reply = this.post.reply
-      return reply && reply.length !== 0
+    top() {
+      let top = this.floors[0]
+      return top && top[0]
     }
   },
 
   created() {
     this.req(`/post/${this.id}`).then(post => {
-      post.reply.unshift(post)
-      this.post = post
+      post.id = 0
+      let floors = [[post]]
+      let index = {}
+      post.reply.forEach(reply => {
+        if (reply.replyId === 0) {
+          index[reply.id] = floors.length
+          floors.push([reply])
+        } else {
+          let i = index[reply.replyId]
+          floors[i].push(reply)
+          index[reply.id] = i
+        }
+      })
+      this.floors = floors
       this.loading = false
     })
   },
 
   methods: {
-    render(reply) {
-      return MarkdownIt.render(reply.content)
-    },
-
     edit(reply) {
       let { title, content } = reply
       if (title == null) {
@@ -121,68 +111,23 @@ export default {
       this.current = reply
     },
 
-    editing(reply) {
-      return reply === this.current
-    },
-
     discard() {
       this.current = null
     },
 
     addReply(reply) {
       this.discard()
-      if (reply !== this.post) {
-        this.replyId = reply.id
-      } else {
-        this.replyId = 0
-      }
+      this.replyId = reply.id
       this.$nextTick(() => {
         this.$refs.replyForm.focus()
       })
     },
 
-    editLink(reply) {
-      let args = ['a', {}]
-      if (this.current !== reply) {
-        args[1].on = {
-          click: () => this.edit(reply)
-        }
-        args[2] = ['edit']
-      } else {
-        args[1].on = {
-          click: () => this.discard()
-        }
-        args[2] = ['discard']
-      }
-      return args
-    },
-
-    replyLink(reply) {
-      let args = ['a', {}, 'reply']
-      args[1].on = {
-        click: () => this.addReply(reply)
-      }
-      return args
-    },
-
-    headerItems(reply) {
-      let items = [
-        reply.nickname,
-        `#${reply.id}`,
-        this.formatDate(reply.updated)
-      ]
-      if (reply.userId === this.user.id) {
-        items.push(this.editLink(reply))
-      }
-      items.push(this.replyLink(reply))
-      return items
-    },
-
-    async editSubmit() {
+    async submitEdit() {
       console.log('edit', this.editForm)
       this.editSending = true
       let url = `/post/${this.id}`
-      if (this.current !== this.post) {
+      if (this.current !== this.top) {
         url += `/reply/${this.current.id}`
       }
       await this.req(url, {
@@ -213,25 +158,6 @@ export default {
 <style lang="scss">
 #post {
   flex: 0 1 800px;
-  p {
-    margin-bottom: 12px;
-  }
-  pre {
-    overflow: auto;
-    font-size: 95%;
-  }
-  .reply-item {
-    overflow: auto;
-    &:last-child {
-      border-bottom: 1px solid #e8e8e8;
-    }
-    .editor-form {
-      margin: 16px 0 4px;
-      .editor-form-content {
-        margin-bottom: 0;
-      }
-    }
-  }
   .title {
     font-weight: bold;
   }
@@ -240,6 +166,9 @@ export default {
     .editor-form {
       margin-top: 12px;
     }
+  }
+  .floor:last-child {
+    border-bottom: 1px solid #e8e8e8;
   }
 }
 </style>
