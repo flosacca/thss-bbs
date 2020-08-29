@@ -17,7 +17,7 @@
     >
       <template v-slot:renderItem="reply">
         <a-list-item class="reply-item">
-          <base-items :items="headerItems(reply)"/>
+          <base-items tag="p" :items="headerItems(reply)"/>
 
           <div v-if="editing(reply)">
             <editor-form
@@ -169,7 +169,7 @@ export default {
       let items = [
         reply.nickname,
         `#${reply.id}`,
-        this.$options.filters.formatDate(reply.updated)
+        this.formatDate(reply.updated)
       ]
       if (reply.userId === this.user.id) {
         items.push(this.editLink(reply))

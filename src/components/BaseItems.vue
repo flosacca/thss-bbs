@@ -6,6 +6,10 @@ export default {
     items: {
       type: Array,
       default: () => []
+    },
+    tag: {
+      type: String,
+      default: 'div'
     }
   },
 
@@ -21,7 +25,7 @@ export default {
     if (a.length) {
       a.pop()
     }
-    return createElement('p', {}, a)
+    return createElement(this.tag, {}, a)
   }
 }
 </script>

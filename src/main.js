@@ -21,17 +21,6 @@ Vue.component(EditorForm.name, EditorForm)
 
 Vue.config.productionTip = false
 
-Vue.filter('formatDate', (date, type) => {
-  date = moment(String(date))
-  switch (type) {
-    case 'relative':
-      return date.fromNow()
-    case 'absolute':
-    default:
-      return date.format('YYYY-MM-DD HH:mm:ss')
-  }
-})
-
 Vue.mixin({
   methods: {
     async req(path, { ...options }) {
@@ -46,6 +35,17 @@ Vue.mixin({
         return res.data
       } catch (e) {
         console.log(e.response)
+      }
+    },
+
+    formatDate(date, type) {
+      date = moment(String(date))
+      switch (type) {
+        case 'relative':
+          return date.fromNow()
+        case 'absolute':
+        default:
+          return date.format('MM-DD HH:mm:ss')
       }
     }
   }

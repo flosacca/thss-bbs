@@ -8,12 +8,7 @@
     >
       <template v-slot:renderItem="post">
         <a-list-item>
-          <router-link :to="`/posts/${post.id}`">
-            {{ post.title }}
-          </router-link> /
-          {{ post.nickname }} /
-          #{{ post.id }} /
-          {{ post.lastRepliedTime | formatDate('absolute') }}
+          <base-items :items="headerItems(post)"/>
         </a-list-item>
       </template>
     </a-list>
@@ -48,17 +43,31 @@ export default {
 
   computed: {
     page() {
-      return Number(this.$route.query.page) || 1
+      let v = this.$route.query.page
+      return v == null ? 1 : Number(v)
     },
 
     size() {
-      return Number(this.$route.query.size) || 20
+      let v = this.$route.query.size
+      return v == null ? 20 : Number(v)
+    },
+
+    userId() {
+      let v = this.$route.query.userId
+      return v == null ? 0 : Number(v)
     }
   },
 
   watch: {
-    $route() {
-      this.updatePage()
+    '$route.query': {
+      handler(cur, old) {
+        for (let key of ['size', 'userId']) {
+          if (cur[key] !== old[key]) {
+            return this.reload()
+          }
+        }
+        this.updatePage()
+      }
     }
   },
 
@@ -71,7 +80,12 @@ export default {
         total: pageData.total,
         pageSize: this.size,
         onChange: page => {
-          this.$router.push({ query: { ...this.$route.query, page } })
+          this.$router.push({
+            query: {
+              ...this.$route.query,
+              page
+            }
+          })
           window.scroll(0, 0)
           this.updatePage()
         }
@@ -81,6 +95,39 @@ export default {
   },
 
   methods: {
+    routerLink(post) {
+      let args = ['router-link', {}, post.title]
+      args[1].props = {
+        to: `/posts/${post.id}`
+      }
+      return args
+    },
+
+    userLink(post) {
+      let args = ['a', {}, post.nickname]
+      args[1].on = {
+        click: () => {
+          let query = {
+            ...this.$route.query,
+            userId: post.userId
+          }
+          delete query.page
+          this.$router.push({ query })
+          this.reload()
+        }
+      }
+      return args
+    },
+
+    headerItems(post) {
+      return [
+        this.routerLink(post),
+        this.userLink(post),
+        `#${post.id}`,
+        this.formatDate(post.lastRepliedTime)
+      ]
+    },
+
     async updatePage() {
       if (!this.hasPage(this.page)) {
         this.loading = true
@@ -96,6 +143,7 @@ export default {
         params: {
           page,
           size: this.size,
+          userId: this.userId,
           orderByReply: true
         }
       })
@@ -136,8 +184,11 @@ export default {
   li {
     overflow: auto;
     a {
-      color: inherit;
-      font-weight: bold;
+      color: rgba(0, 0, 0, 0.5);
+      &:first-child {
+        color: inherit;
+        font-weight: bold;
+      }
       &:hover {
         color: #1890ff;
       }
