@@ -137,5 +137,10 @@ export default {
       }
     }
   }
+  .editor-form {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid #e8e8e8;
+  }
 }
 </style>

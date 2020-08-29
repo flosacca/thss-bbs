@@ -35,7 +35,9 @@
       /> -->
     </a-form-model-item>
 
-    <a-form-model-item>
+    <a-form-model-item
+      class="editor-form-submit"
+    >
       <a-button
         type="primary"
         html-type="submit"
@@ -104,26 +106,30 @@ export default {
 
 <style lang="scss">
 .editor-form {
-  margin-top: 28px;
+  margin: 18px 0 12px;
   .editor-form-title {
-    margin-bottom: 18px;
+    margin-bottom: 6px;
     input {
       font-weight: bold;
     }
   }
   .editor-form-content {
-    margin-bottom: 12px;
+    margin-bottom: 4px;
     [contentEditable=true] {
       height: 176px;
       overflow: auto;
     }
   }
-  [type=submit] {
-    font-weight: bold;
-    text-transform: capitalize;
-    width: 100%;
-    &[disabled] {
-      cursor: default;
+  .editor-form-submit {
+    margin: 0;
+    padding: 0;
+    [type=submit] {
+      font-weight: bold;
+      text-transform: capitalize;
+      width: 100%;
+      &[disabled] {
+        cursor: default;
+      }
     }
   }
 }

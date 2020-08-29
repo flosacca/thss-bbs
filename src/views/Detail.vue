@@ -2,6 +2,7 @@
   <div id="post" class="view" v-if="hasReply">
     <a-input
       class="title"
+      placeholder="Title"
       v-if="editing(post)"
       v-model="editForm.title"
     />
@@ -17,14 +18,6 @@
       <template v-slot:renderItem="reply">
         <a-list-item>
           <base-items :items="headerItems(reply)"/>
-          <!-- <div>
-            {{ reply.nickname }} /
-            #{{ reply.id }} /
-            {{ reply.updated | formatDate('absolute') }}
-            <span v-if="reply.userId === user.id">
-              / <a @click="edit(reply)">edit</a>
-            </span>
-          </div> -->
 
           <div v-if="editing(reply)">
             <editor-form
@@ -37,24 +30,26 @@
             />
           </div>
           <div v-else>
-            <div v-if="reply.replyId != null">
-              &gt;&gt;{{ reply.replyId }}
-            </div>
+            <p v-if="reply !== post">
+              {{ '>>' + reply.replyId }}
+            </p>
             <div v-html="render(reply)"></div>
           </div>
         </a-list-item>
       </template>
     </a-list>
 
-    <editor-form
-      ref="replyForm"
-      :form="replyForm"
-      :hasTitle="false"
-      submitText="new reply"
-      :submitting="replying"
-      @submit="newReply"
-      v-if="current == null"
-    />
+    <div class="reply" v-if="current == null">
+      <div>{{ '>>' + replyId }}</div>
+      <editor-form
+        ref="replyForm"
+        :form="replyForm"
+        :hasTitle="false"
+        submitText="reply"
+        :submitting="replying"
+        @submit="newReply"
+      />
+    </div>
   </div>
 </template>
 
@@ -122,7 +117,11 @@ export default {
 
     addReply(reply) {
       this.discard()
-      this.replyId = reply.id
+      if (reply !== this.post) {
+        this.replyId = reply.id
+      } else {
+        this.replyId = 0
+      }
       this.$nextTick(() => {
         this.$refs.replyForm.focus()
       })
@@ -200,14 +199,29 @@ export default {
 <style lang="scss">
 #post {
   flex: 0 1 800px;
+  p {
+    margin-bottom: 8px;
+  }
   li {
     overflow: auto;
     &:last-child {
-      padding-bottom: 0;
+      border-bottom: 1px solid #e8e8e8;
+    }
+    .editor-form {
+      margin: 16px 0 4px;
+      .editor-form-content {
+        margin-bottom: 0;
+      }
     }
   }
-  input.title {
+  .title {
     font-weight: bold;
+  }
+  .reply {
+    margin-top: 12px;
+    .editor-form {
+      margin-top: 12px;
+    }
   }
 }
 </style>

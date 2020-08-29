@@ -21,7 +21,7 @@ export default {
     if (a.length) {
       a.pop()
     }
-    return createElement('div', {}, a)
+    return createElement('p', {}, a)
   }
 }
 </script>
