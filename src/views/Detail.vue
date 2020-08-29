@@ -16,7 +16,7 @@
       :data-source="post.reply"
     >
       <template v-slot:renderItem="reply">
-        <a-list-item>
+        <a-list-item class="reply-item">
           <base-items :items="headerItems(reply)"/>
 
           <div v-if="editing(reply)">
@@ -202,7 +202,7 @@ export default {
   p {
     margin-bottom: 8px;
   }
-  li {
+  .reply-item {
     overflow: auto;
     &:last-child {
       border-bottom: 1px solid #e8e8e8;

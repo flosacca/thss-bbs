@@ -56,6 +56,12 @@ export default {
     }
   },
 
+  watch: {
+    $route() {
+      this.updatePage()
+    }
+  },
+
   created() {
     this.getPage(this.page).then(pageData => {
       this.assignPage(this.page, pageData)
@@ -65,7 +71,9 @@ export default {
         total: pageData.total,
         pageSize: this.size,
         onChange: page => {
-          this.updatePage(page)
+          this.$router.push({ query: { ...this.$route.query, page } })
+          window.scroll(0, 0)
+          this.updatePage()
         }
       }
       this.$set(this.pagination, 'current', this.page)
@@ -73,16 +81,14 @@ export default {
   },
 
   methods: {
-    async updatePage(page) {
-      this.$router.push({ query: { ...this.$route.query, page } })
-      window.scroll(0, 0)
-      if (!this.hasPage(page)) {
+    async updatePage() {
+      if (!this.hasPage(this.page)) {
         this.loading = true
-        let pageData = await this.getPage(page)
-        this.assignPage(page, pageData)
+        let pageData = await this.getPage(this.page)
+        this.assignPage(this.page, pageData)
         this.loading = false
       }
-      this.pagination.current = page
+      this.pagination.current = this.page
     },
 
     async getPage(page) {
