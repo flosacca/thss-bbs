@@ -1,14 +1,16 @@
 <template>
   <a-list
     class="reply-list"
+    :class="{ 'no-last-border': !pagination }"
     item-layout="vertical"
     :data-source="replies"
+    :pagination="pagination"
   >
     <template v-slot:renderItem="reply">
       <a-list-item class="reply-item">
         <base-items tag="p" :items="headerItems(reply)"/>
 
-        <div v-if="editing(reply)">
+        <template v-if="editing(reply)">
           <editor-form
             :form="form"
             :hasTitle="false"
@@ -16,13 +18,13 @@
             :submitting="editSending"
             @submit="submitEdit"
           />
-        </div>
-        <div v-else>
-          <p v-if="reply.id !== 0">
+        </template>
+        <template v-else>
+          <p v-if="reply.replyId">
             {{ '>>' + reply.replyId }}
           </p>
           <div v-html="render(reply)"></div>
-        </div>
+        </template>
       </a-list-item>
     </template>
   </a-list>
@@ -56,6 +58,19 @@ export default {
   data() {
     return {
       editSending: false
+    }
+  },
+
+  computed: {
+    pagination() {
+      let total = this.replies.length
+      let pageSize = 5
+      return total > pageSize && {
+        size: 'small',
+        showQuickJumper: true,
+        total,
+        pageSize
+      }
     }
   },
 
@@ -127,7 +142,10 @@ export default {
 <style lang="scss">
 .reply-list {
   p {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    &:last-child {
+      margin-bottom: 4px;
+    }
   }
   pre {
     overflow: auto;
@@ -144,6 +162,15 @@ export default {
         margin-bottom: 0;
       }
     }
+  }
+  .ant-list-pagination {
+    margin: 14px 0;
+  }
+}
+
+#app {
+  .no-last-border li:last-child {
+    border-bottom: none;
   }
 }
 </style>

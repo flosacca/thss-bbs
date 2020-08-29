@@ -14,9 +14,11 @@
     </template>
 
     <a-list
+      class="floors"
       item-layout="vertical"
       :loading="loading"
       :data-source="floors"
+      :pagination="pagination"
     >
       <template v-slot:renderItem="floor">
         <a-list-item class="floor">
@@ -77,6 +79,16 @@ export default {
     top() {
       let top = this.floors[0]
       return top && top[0]
+    },
+
+    pagination() {
+      let total = this.floors.length
+      let pageSize = 20
+      return total > pageSize && {
+        showQuickJumper: true,
+        total,
+        pageSize
+      }
     }
   },
 
@@ -167,8 +179,18 @@ export default {
       margin-top: 12px;
     }
   }
-  .floor:last-child {
-    border-bottom: 1px solid #e8e8e8;
+  .floors {
+    .floor {
+      padding: 0;
+      &:last-child {
+        border-bottom: 1px solid #e8e8e8;
+      }
+    }
+    & > .ant-list-pagination {
+      margin: 0;
+      padding: 18px 0;
+      border-bottom: 1px solid #e8e8e8;
+    }
   }
 }
 </style>
