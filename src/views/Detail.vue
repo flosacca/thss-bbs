@@ -75,6 +75,7 @@ export default {
       replying: false,
       editSending: false,
       current: null,
+      replyId: 0,
       post: {},
       replyForm: {},
       editForm: {}
@@ -119,7 +120,12 @@ export default {
       this.current = null
     },
 
-    addReply() {
+    addReply(reply) {
+      this.discard()
+      this.replyId = reply.id
+      this.$nextTick(() => {
+        this.$refs.replyForm.focus()
+      })
     },
 
     editLink(reply) {
@@ -181,7 +187,7 @@ export default {
         method: 'post',
         data: {
           ...this.replyForm,
-          replyId: 0
+          replyId: this.replyId
         }
       })
       this.replying = false
