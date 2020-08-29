@@ -3,7 +3,7 @@
     <a-layout class="layout">
       <a-layout-header class="header">
         <router-link to="/" @click.native="reload">
-          <div class="logo">bbs</div>
+          <div class="logo">清软论坛</div>
         </router-link>
         <a-button v-if="loggedIn" @click="logout">log out</a-button>
       </a-layout-header>
@@ -13,7 +13,6 @@
           <router-view v-if="$route.name === 'index'"/>
         </keep-alive>
         <router-view v-if="$route.name !== 'index'"/>
-        <!-- <router-view/> -->
       </a-layout-content>
     </a-layout>
   </div>
@@ -63,15 +62,17 @@ export default {
     line-height: 1;
     align-items: center;
     justify-content: space-between;
-    & * {
-      font-weight: bold;
+    * {
       text-transform: uppercase;
     }
+    button {
+      font-weight: bold;
+    }
     .logo {
-      color: #fff;
-      font-size: 28px;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 24px;
       &:hover {
-        color: #eee;
+        color: #90d7ec;
       }
     }
   }

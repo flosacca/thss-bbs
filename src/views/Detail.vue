@@ -85,7 +85,6 @@ export default {
       let total = this.floors.length
       let pageSize = 20
       return total > pageSize && {
-        /* showQuickJumper: true, */
         total,
         pageSize,
         onChange() {
@@ -144,7 +143,6 @@ export default {
     },
 
     async submitEdit() {
-      console.log('edit', this.editForm)
       this.editSending = true
       let url = `/post/${this.id}`
       if (this.current !== this.top) {
@@ -159,7 +157,6 @@ export default {
     },
 
     async newReply() {
-      console.log('new reply', this.replyForm)
       this.replying = true
       await this.req(`/post/${this.id}/reply`, {
         method: 'post',

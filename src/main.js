@@ -2,14 +2,33 @@ import Vue from 'vue'
 import axios from 'axios'
 import cookies from 'vue-cookies'
 import moment from 'moment'
-import ContentEditable from 'vue-contenteditable'
 import 'highlight.js/styles/github.css'
 Vue.use(cookies)
-Vue.use(ContentEditable)
 
-import Antd from 'ant-design-vue'
-import 'ant-design-vue/dist/antd.css'
-Vue.use(Antd)
+// import Antd from 'ant-design-vue'
+// import 'ant-design-vue/dist/antd.css'
+// Vue.use(Antd)
+import Alert from 'ant-design-vue/lib/alert'
+import Button from 'ant-design-vue/lib/button'
+import FormModel from 'ant-design-vue/lib/form-model'
+import Icon from 'ant-design-vue/lib/icon'
+import Input from 'ant-design-vue/lib/input'
+import Layout from 'ant-design-vue/lib/layout'
+import List from 'ant-design-vue/lib/list'
+import 'ant-design-vue/lib/alert/style/css'
+import 'ant-design-vue/lib/button/style/css'
+import 'ant-design-vue/lib/form-model/style/css'
+import 'ant-design-vue/lib/icon/style/css'
+import 'ant-design-vue/lib/input/style/css'
+import 'ant-design-vue/lib/layout/style/css'
+import 'ant-design-vue/lib/list/style/css'
+Vue.use(Alert)
+Vue.use(Button)
+Vue.use(FormModel)
+Vue.use(Icon)
+Vue.use(Input)
+Vue.use(Layout)
+Vue.use(List)
 
 import App from './App.vue'
 import router from './router'

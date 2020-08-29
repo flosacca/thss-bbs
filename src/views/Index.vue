@@ -164,13 +164,11 @@ export default {
     },
 
     async submit() {
-      console.log('new post', this.form)
       this.posting = true
       await this.req('/post', {
         method: 'post',
         data: this.form
       })
-      /* await new Promise(r => setTimeout(r, 2000)) */
       this.posting = false
       this.reload()
     }
