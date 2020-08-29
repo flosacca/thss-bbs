@@ -11,9 +11,10 @@ module.exports = {
     parser: 'babel-eslint'
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-unused-vars': 'warn',
-    'vue/no-unused-vars': 'warn'
+    'no-console': process.env.NODE_ENV === 'production' ? 1 : 0,
+    'no-debugger': process.env.NODE_ENV === 'production' ? 1 : 0,
+    'no-empty': 0,
+    'no-unused-vars': 1,
+    'vue/no-unused-vars': 1
   }
 }
