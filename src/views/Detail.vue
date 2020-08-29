@@ -37,7 +37,7 @@
 
     <template v-if="!loading && current == null">
       <div class="reply">
-        <div>{{ '>>' + replyId }}</div>
+        <p>{{ hint }}</p>
         <editor-form
           ref="replyForm"
           :form="replyForm"
@@ -68,7 +68,7 @@ export default {
       loading: true,
       replying: false,
       current: null,
-      replyId: 0,
+      replyTo: null,
       floors: [],
       editForm: {},
       replyForm: {}
@@ -79,6 +79,14 @@ export default {
     top() {
       let top = this.floors[0]
       return top && top[0]
+    },
+
+    hint() {
+      if (this.replyTo == null) {
+        return ''
+      }
+      let a = this.replyTo
+      return `re: ${a.nickname} / ${a.pos}`
     },
 
     pagination() {
@@ -115,6 +123,7 @@ export default {
         }
       })
       this.floors = floors
+      this.replyTo = post
       this.loading = false
     })
   },
@@ -136,7 +145,7 @@ export default {
 
     addReply(reply) {
       this.discard()
-      this.replyId = reply.id
+      this.replyTo = reply
       this.$nextTick(() => {
         this.$refs.replyForm.focus()
       })
@@ -162,7 +171,7 @@ export default {
         method: 'post',
         data: {
           ...this.replyForm,
-          replyId: this.replyId
+          replyId: this.replyTo.id
         }
       })
       this.replying = false

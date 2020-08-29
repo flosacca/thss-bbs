@@ -123,7 +123,6 @@ export default {
       return [
         this.routerLink(post),
         this.userLink(post),
-        `#${post.id}`,
         this.formatDate(post.lastRepliedTime)
       ]
     },
