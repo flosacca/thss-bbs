@@ -87,7 +87,10 @@ export default {
       return total > pageSize && {
         showQuickJumper: true,
         total,
-        pageSize
+        pageSize,
+        onChange() {
+          window.scroll(0, 0)
+        }
       }
     }
   },
@@ -95,15 +98,15 @@ export default {
   created() {
     this.req(`/post/${this.id}`).then(post => {
       post.id = 0
-      let floors = [[post]]
+      let floors = [[post, []]]
       let index = {}
       post.reply.forEach(reply => {
         if (reply.replyId === 0) {
           index[reply.id] = floors.length
-          floors.push([reply])
+          floors.push([reply, []])
         } else {
           let i = index[reply.replyId]
-          floors[i].push(reply)
+          floors[i][1].push(reply)
           index[reply.id] = i
         }
       })

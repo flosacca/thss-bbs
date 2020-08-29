@@ -1,33 +1,48 @@
 <template>
-  <a-list
-    class="reply-list"
-    :class="{ 'no-last-border': !pagination }"
-    item-layout="vertical"
-    :data-source="replies"
-    :pagination="pagination"
-  >
-    <template v-slot:renderItem="reply">
-      <a-list-item class="reply-item">
-        <base-items tag="p" :items="headerItems(reply)"/>
+  <div class="reply-list">
+    <div class="reply-item">
+      <base-items tag="p" :items="headerItems(replies[0])"/>
+      <template v-if="editing(replies[0])">
+        <editor-form
+          :form="form"
+          :hasTitle="false"
+          submitText="OK"
+          :submitting="editSending"
+          @submit="submitEdit"
+        />
+      </template>
+      <template v-else>
+        <div v-html="render(replies[0])"></div>
+      </template>
+    </div>
 
-        <template v-if="editing(reply)">
-          <editor-form
-            :form="form"
-            :hasTitle="false"
-            submitText="OK"
-            :submitting="editSending"
-            @submit="submitEdit"
-          />
-        </template>
-        <template v-else>
-          <p v-if="reply.replyId">
-            {{ '>>' + reply.replyId }}
-          </p>
-          <div v-html="render(reply)"></div>
-        </template>
-      </a-list-item>
-    </template>
-  </a-list>
+    <a-list
+      :class="{ 'no-last-border': !pagination }"
+      item-layout="vertical"
+      :data-source="replies[1]"
+      :pagination="pagination"
+      v-if="replies[1].length !== 0"
+    >
+      <template v-slot:renderItem="reply">
+        <a-list-item class="reply-item">
+          <base-items tag="p" :items="headerItems(reply)"/>
+          <template v-if="editing(reply)">
+            <editor-form
+              :form="form"
+              :hasTitle="false"
+              submitText="OK"
+              :submitting="editSending"
+              @submit="submitEdit"
+            />
+          </template>
+          <template v-else>
+            <p>{{ hint(reply) }}</p>
+            <div v-html="render(reply)"></div>
+          </template>
+        </a-list-item>
+      </template>
+    </a-list>
+  </div>
 </template>
 
 <script>
@@ -63,11 +78,11 @@ export default {
 
   computed: {
     pagination() {
-      let total = this.replies.length
+      let total = this.replies[1].length
       let pageSize = 5
       return total > pageSize && {
         size: 'small',
-        showQuickJumper: true,
+        /* showQuickJumper: true, */
         total,
         pageSize
       }
@@ -75,6 +90,10 @@ export default {
   },
 
   methods: {
+    hint(reply) {
+      return '>>' + reply.replyId
+    },
+
     render(reply) {
       return MarkdownIt.render(reply.content)
     },
@@ -153,9 +172,6 @@ export default {
   }
   .reply-item {
     overflow: auto;
-    &:not(:first-child) {
-      margin-left: 24px;
-    }
     .editor-form {
       margin: 16px 0 4px;
       .editor-form-content {
@@ -163,8 +179,18 @@ export default {
       }
     }
   }
+  li.reply-item {
+    margin-left: 24px;
+  }
+  div.reply-item {
+    padding: 12px 0;
+    &:not(:last-child) {
+      border-bottom: 1px solid #e8e8e8;
+    }
+  }
   .ant-list-pagination {
-    margin: 14px 0;
+    margin: 0;
+    padding: 14px 0;
   }
 }
 
