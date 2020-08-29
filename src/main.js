@@ -13,7 +13,9 @@ Vue.use(Antd)
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import BaseItems from './components/BaseItems.vue'
 import EditorForm from './components/EditorForm.vue'
+Vue.component(BaseItems.name, BaseItems)
 Vue.component(EditorForm.name, EditorForm)
 
 Vue.config.productionTip = false

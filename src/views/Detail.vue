@@ -1,6 +1,7 @@
 <template>
   <div id="post" class="view" v-if="hasReply">
     <a-input
+      class="title"
       v-if="editing(post)"
       v-model="editForm.title"
     />
@@ -15,14 +16,15 @@
     >
       <template v-slot:renderItem="reply">
         <a-list-item>
-          <div>
+          <base-items :items="headerItems(reply)"/>
+          <!-- <div>
             {{ reply.nickname }} /
             #{{ reply.id }} /
             {{ reply.updated | formatDate('absolute') }}
             <span v-if="reply.userId === user.id">
               / <a @click="edit(reply)">edit</a>
             </span>
-          </div>
+          </div> -->
 
           <div v-if="editing(reply)">
             <editor-form
@@ -74,13 +76,8 @@ export default {
       editSending: false,
       current: null,
       post: {},
-      replyForm: {
-        content: ''
-      },
-      editForm: {
-        title: '',
-        content: ''
-      }
+      replyForm: {},
+      editForm: {}
     }
   },
 
@@ -116,6 +113,50 @@ export default {
 
     editing(reply) {
       return reply === this.current
+    },
+
+    discard() {
+      this.current = null
+    },
+
+    addReply() {
+    },
+
+    editLink(reply) {
+      let args = ['a', {}]
+      if (this.current !== reply) {
+        args[1].on = {
+          click: () => this.edit(reply)
+        }
+        args[2] = ['edit']
+      } else {
+        args[1].on = {
+          click: () => this.discard()
+        }
+        args[2] = ['discard']
+      }
+      return args
+    },
+
+    replyLink(reply) {
+      let args = ['a', {}, 'reply']
+      args[1].on = {
+        click: () => this.addReply(reply)
+      }
+      return args
+    },
+
+    headerItems(reply) {
+      let items = [
+        reply.nickname,
+        `#${reply.id}`,
+        this.$options.filters.formatDate(reply.updated)
+      ]
+      if (reply.userId === this.user.id) {
+        items.push(this.editLink(reply))
+      }
+      items.push(this.replyLink(reply))
+      return items
     },
 
     async editSubmit() {
@@ -158,6 +199,9 @@ export default {
     &:last-child {
       padding-bottom: 0;
     }
+  }
+  input.title {
+    font-weight: bold;
   }
 }
 </style>
