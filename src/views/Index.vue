@@ -182,9 +182,9 @@ export default {
     overflow: auto;
     a {
       color: rgba(6, 36, 63, 0.7);
+      font-weight: bold;
       &:first-child {
         color: inherit;
-        font-weight: bold;
       }
       &:hover {
         color: #1890ff;

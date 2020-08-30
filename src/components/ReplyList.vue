@@ -37,9 +37,9 @@
           </template>
           <template v-else>
             <template v-if="table[reply.replyId].replyId !== 0">
-              <p>{{ hint(reply) }}</p>
+              <base-items tag="p" delimiter="" :items="hint(reply)"/>
             </template>
-            <div v-html="render(reply)"></div>
+            <div v-html="render(reply)"/>
           </template>
         </a-list-item>
       </template>
@@ -66,6 +66,11 @@ const MarkdownIt = require('markdown-it')({
     return `<pre class="hljs"><code>${html}</code></pre>`
   }
 })
+
+function bold(text) {
+  let style = { fontWeight: 'bold' }
+  return ['span', { style }, text]
+}
 
 export default {
   name: 'reply-list',
@@ -105,7 +110,7 @@ export default {
   methods: {
     hint(reply) {
       let a = this.table[reply.replyId]
-      return `re: ${a.nickname} / ${a.pos}`
+      return ['re: ', bold(a.nickname)]
     },
 
     render(reply) {
@@ -153,9 +158,10 @@ export default {
     },
 
     headerItems(reply) {
+      let style = { fontWeight: 'bold' }
       let items = [
-        reply.nickname,
-        reply.pos,
+        bold(reply.nickname),
+        bold(reply.pos),
         this.formatDate(reply.updated)
       ]
       if (reply.userId === this.user.id) {

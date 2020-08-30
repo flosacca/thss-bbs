@@ -86,7 +86,7 @@ export default {
         return ''
       }
       let a = this.replyTo
-      return `re: ${a.nickname} / ${a.pos}`
+      return `re: ${a.nickname} (${a.pos})`
     },
 
     pagination() {

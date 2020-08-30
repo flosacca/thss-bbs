@@ -10,23 +10,27 @@ export default {
     tag: {
       type: String,
       default: 'div'
+    },
+    delimiter: {
+      type: String,
+      default: ' / '
     }
   },
 
-  render(createElement) {
+  render(h) {
     let a = []
     this.items.forEach(item => {
       if (item != null) {
         if (Array.isArray(item)) {
-          item = createElement(...item)
+          item = h(...item)
         }
-        a = a.concat([item, ' / '])
+        a = a.concat([item, this.delimiter])
       }
     })
     if (a.length) {
       a.pop()
     }
-    return createElement(this.tag, {}, a)
+    return h(this.tag, {}, a)
   }
 }
 </script>
