@@ -25,8 +25,12 @@
 </template>
 
 <script>
+import Utils from './utils'
+
 export default {
   inject: ['reload'],
+
+  mixins: [Utils.mixin],
 
   data() {
     return {
@@ -99,22 +103,6 @@ export default {
       let args = ['router-link', {}, post.title]
       args[1].props = {
         to: `/posts/${post.id}`
-      }
-      return args
-    },
-
-    userLink(post) {
-      let args = ['a', {}, post.nickname]
-      args[1].on = {
-        click: () => {
-          let query = {
-            ...this.$route.query,
-            userId: post.userId
-          }
-          delete query.page
-          this.$router.push({ query })
-          this.reload()
-        }
       }
       return args
     },

@@ -5,9 +5,6 @@ import moment from 'moment'
 import 'highlight.js/styles/github.css'
 Vue.use(cookies)
 
-// import Antd from 'ant-design-vue'
-// import 'ant-design-vue/dist/antd.css'
-// Vue.use(Antd)
 import Alert from 'ant-design-vue/lib/alert'
 import Button from 'ant-design-vue/lib/button'
 import FormModel from 'ant-design-vue/lib/form-model'

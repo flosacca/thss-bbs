@@ -27,12 +27,6 @@
         :rows="8"
         v-model="form.content"
       />
-      <!-- <contenteditable
-        tag="div"
-        class="ant-input"
-        v-model="model.content"
-        :noHTML="false"
-      /> -->
     </a-form-model-item>
 
     <a-form-model-item

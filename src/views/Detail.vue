@@ -52,12 +52,12 @@
 </template>
 
 <script>
-import ReplyList from '@/components/ReplyList.vue'
+import ReplyList from './ReplyList.vue'
 
 export default {
-  inject: ['reload'],
-
   props: ['id'],
+
+  inject: ['reload'],
 
   components: {
     'reply-list': ReplyList

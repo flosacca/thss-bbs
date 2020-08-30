@@ -48,34 +48,16 @@
 </template>
 
 <script>
-const hljs = require('highlight.js')
-
-const MarkdownIt = require('markdown-it')({
-  html: true,
-  linkify: true,
-  highlight(code, lang) {
-    let html = null
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        html = hljs.highlight(lang, code).value
-      } catch {}
-    }
-    if (html == null) {
-      html = MarkdownIt.utils.escapeHtml(code)
-    }
-    return `<pre class="hljs"><code>${html}</code></pre>`
-  }
-})
-
-function bold(text) {
-  let style = { fontWeight: 'bold' }
-  return ['span', { style }, text]
-}
+import Utils from './utils'
 
 export default {
   name: 'reply-list',
 
   props: ['replies', 'current', 'form'],
+
+  inject: ['reload'],
+
+  mixins: [Utils.mixin],
 
   data() {
     return {
@@ -110,11 +92,11 @@ export default {
   methods: {
     hint(reply) {
       let a = this.table[reply.replyId]
-      return ['re: ', bold(a.nickname)]
+      return ['re: ', Utils.bold(a.nickname)]
     },
 
     render(reply) {
-      return MarkdownIt.render(reply.content)
+      return Utils.render(reply.content)
     },
 
     edit(reply) {
@@ -158,10 +140,9 @@ export default {
     },
 
     headerItems(reply) {
-      let style = { fontWeight: 'bold' }
       let items = [
-        bold(reply.nickname),
-        bold(reply.pos),
+        this.userLink(reply),
+        Utils.bold(reply.pos),
         this.formatDate(reply.updated)
       ]
       if (reply.userId === this.user.id) {
@@ -198,8 +179,12 @@ export default {
         margin-bottom: 0;
       }
     }
-    p:first-child a {
+    & > p:first-child a {
       color: rgba(12, 72, 127, 0.9);
+      &:first-child {
+        color: rgba(6, 36, 63, 0.7);
+        font-weight: bold;
+      }
       &:hover {
         color: #1890ff;
       }
